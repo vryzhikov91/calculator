@@ -66,9 +66,11 @@ const Calculator = (props) => {
                             let result = String(eval(input)).length > 3 &&
                                 String(eval(input)).includes(".")
                                 ? String(eval(input).toFixed(4))
-                                : String(eval(input));
-                            props.addCalculated(`${input}=${result}`);                          
-                           
+                                : String(eval(input));                                
+                            if (input !== '') {
+                                props.addCalculated(`${input}=${result}`);
+                            }
+
                             setInput(
                                 ''
                             );
@@ -76,7 +78,7 @@ const Calculator = (props) => {
                             console.log(e);
                         }
                     }}
-                    value="="
+                    value="="                    
                 >
                     =
         </button>

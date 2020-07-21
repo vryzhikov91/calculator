@@ -7,7 +7,7 @@ const connectionDB = require('./config/db.js')
 connectionDB();
 require('./models/calculatedModel');
 
-const port = process.env.PORT || 4001;
+const port = process.env.PORT || 80;
 const index = require("./routes/index");
 
 
@@ -27,15 +27,15 @@ io.on("connection", (socket) => {
   if (interval) {
     clearInterval(interval);
   }
-  interval = setInterval(async () => await getApiAndEmit(socket), 1000);
+  interval = setInterval( () => getApiAndEmit(socket), 1000);
 
-  socket.on("calculated", async (calculated) => {      
+  socket.on("calculated", async (calculated) => {   
+    
     const elem = new Calculated({
       calculated : calculated.calculated,
       date : new Date()
     });
-    await elem.save();       
-    await getApiAndEmit(socket);
+    await elem.save();         
     
   });
   socket.on("disconnect", () => {
@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
 
 const getApiAndEmit = async (socket) => {
   const list = await Calculated.find().sort({date: -1}).limit(10);
-  socket.emit("calculated", {results:list});
+  io.sockets.emit("calculated", {results:list});
 };
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
